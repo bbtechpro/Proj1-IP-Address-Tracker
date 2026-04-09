@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IP Address Tracker</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+  <script src="./app.js" defer></script>
+  <style>
+    /* The map requires a defined height to appear correctly */
+    #map { height: 100%; width: 100%; }
+    .text-fm-rose-400 { color: hsl(7, 20%, 60%); }
+    .text-fm-rose-900 { color: hsl(14, 65%, 9%); }
+  </style>
+</head>
+<body class="font-sans min-h-screen flex flex-col">
+
+  <header class="relative h-[300px] bg-[url('./images/pattern-bg-mobile.png')] md:bg-[url('./images/pattern-bg-desktop.png')] bg-cover bg-no-repeat flex flex-col items-center pt-8 px-6">
+    
+    <h1 class="text-white text-2xl md:text-3xl font-bold mb-6">IP Address Tracker</h1>
+
+    <form id="ip-form" class="flex w-full max-w-lg shadow-lg rounded-xl overflow-hidden mb-12 z-[1001]">
+      <input 
+        type="text" 
+        id="ip-input" 
+        placeholder="Search for any IP address or domain" 
+        class="w-full p-4 outline-none text-lg"
+      >
+      <button 
+        type="submit" 
+        id="search-btn" 
+        class="bg-black hover:bg-gray-800 p-5 transition-all"
+      >
+        <img src="./images/icon-arrow.svg" alt="Search">
+      </button>
+    </form>
+
+    <div class="absolute bottom-0 translate-y-1/2 w-full max-w-6xl px-6 z-[1000]">
+      <div class="bg-white rounded-2xl shadow-xl flex flex-col md:flex-row p-8 gap-6 md:gap-0 text-center md:text-left">
+        
+        <div class="flex-1 md:pr-8">
+          <p class="text-fm-rose-400 text-[10px] font-bold uppercase tracking-[0.15em] mb-2">IP Address</p>
+          <h2 id="ip-display" class="text-xl md:text-2xl font-bold text-fm-rose-900 leading-tight">---</h2>
+        </div>
+
+        <div class="flex-1 md:border-l border-gray-200 md:px-8">
+          <p class="text-fm-rose-400 text-[10px] font-bold uppercase tracking-[0.15em] mb-2">Location</p>
+          <h2 id="location-display" class="text-xl md:text-2xl font-bold text-fm-rose-900 leading-tight">---</h2>
+        </div>
+
+        <div class="flex-1 md:border-l border-gray-200 md:px-8">
+          <p class="text-fm-rose-400 text-[10px] font-bold uppercase tracking-[0.15em] mb-2">Timezone</p>
+          <h2 id="timezone-display" class="text-xl md:text-2xl font-bold text-fm-rose-900 leading-tight">---</h2>
+        </div>
+
+        <div class="flex-1 md:border-l border-gray-200 md:pl-8">
+          <p class="text-fm-rose-400 text-[10px] font-bold uppercase tracking-[0.15em] mb-2">ISP</p>
+          <h2 id="isp-display" class="text-xl md:text-2xl font-bold text-fm-rose-900 leading-tight">---</h2>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow relative z-1">
+    <div id="map" class="h-full w-full min-h-[500px]"></div>
+  </main>
+</body>
+</html>
