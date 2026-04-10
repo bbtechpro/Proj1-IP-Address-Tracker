@@ -1,19 +1,22 @@
 "use strict";
+// Global Configurations (API Key and Custom Icon)
 const apiKey = "at_BpjP6hDSMim3vUBtr4B6b6X1XgO2y";
-const map = L.map("map", {
-    zoomControl: false
-}).setView([0, 0], 2);
-L.control.zoom({ position: "bottomright" }).addTo(map);
-L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-    subdomains: "abcd",
-    maxZoom: 19,
-    attribution: "&copy; OpenStreetMap contributors &copy; CARTO"
-}).addTo(map);
 const markerIcon = L.icon({
     iconUrl: "./images/icon-location.svg",
     iconSize: [46, 56],
     iconAnchor: [23, 56]
 });
+// Map Initialization (Declared ONLY ONCE)
+const map = L.map("map", {
+    zoomControl: false
+}).setView([0, 0], 2);
+L.control.zoom({ position: "bottomright" }).addTo(map);
+
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: "&copy; OpenStreetMap contributors &copy; CARTO"
+}).addTo(map);
+
 function getElementByIdOrThrow(id) {
     const element = document.getElementById(id);
     if (!(element instanceof HTMLElement)) {
@@ -72,6 +75,7 @@ function updateUI(data) {
     marker?.remove();
     marker = L.marker([lat, lng], { icon: markerIcon }).addTo(map);
 }
+// Function to Fetch Data from API (IPify)
 async function fetchGeoData(query) {
     const params = new URLSearchParams({ apiKey });
     if (query?.type === "ip") {
