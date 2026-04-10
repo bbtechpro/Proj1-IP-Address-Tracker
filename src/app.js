@@ -17,6 +17,24 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: "&copy; OpenStreetMap contributors &copy; CARTO"
 }).addTo(map);
 
+// This function acts as a safety layer for selecting elements from your web page (the DOM) and defines the rules for valid search inputs.
+// ## 1. The getElementByIdOrThrow function
+// This is a "fail-fast" helper. Instead of just grabbing an element, it verifies that the element actually exists and is a valid HTML element.
+
+// * Why use it? Normally, document.getElementById returns null if it can't find the ID. If you try to use that null element later, your app crashes with a vague error. This function stops the app immediately with a specific message (Expected HTML element with id...), making debugging much easier.
+
+// ## 2. Element Selectors
+// The code then uses that function to grab all the UI pieces needed for your IP tracker:
+
+// * Inputs: The form, the text input, and the search button.
+// * Displays: Spots to inject the IP, location, timezone, and ISP data once the search finishes.
+// * Feedback: An error text element to show messages to the user.
+
+// ## 3. Validation Patterns (Regex)
+// Finally, it defines two Regular Expressions to check if the user's input looks right before sending a request:
+
+// * ipv4Pattern: Checks for a standard IP address (four sets of numbers 0-255 separated by dots, like 192.168.1.1).
+// * domainPattern: Checks for a valid website address (like google.com or my-site.net). It ensures there are no protocol prefixes (like https://) and that the ending (TLD) is at least two characters long.
 function getElementByIdOrThrow(id) {
     const element = document.getElementById(id);
     if (!(element instanceof HTMLElement)) {
@@ -34,7 +52,9 @@ const ispDisplay = getElementByIdOrThrow("isp-display");
 const submitButton = getElementByIdOrThrow("search-btn");
 const ipv4Pattern = /^(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)){3}$/;
 const domainPattern = /^(?!:\/\/)([a-zA-Z0-9-]{1,63}\.)+[A-Za-z]{2,63}$/;
+// Marker variable declared globally to allow moving/removing it
 let marker;
+
 function setError(message = "") {
     const hasError = Boolean(message);
     errorText.textContent = message;
@@ -47,6 +67,13 @@ function setLoadingState(isLoading) {
     submitButton.disabled = isLoading;
     form.setAttribute("aria-busy", String(isLoading));
 }
+// // Trimming: It removes any accidental spaces at the start or end of the user's input.
+// The "Empty" Check: If there's nothing left after trimming, it tells the main function the input is empty. This triggers the "Enter an IP address..." error.
+// The Regex Tests:
+// It runs .test(trimmed) against the ipv4Pattern. If it matches, it labels the data as ipv4.
+// If not, it checks the domainPattern. If that matches, it labels it as domain.
+// The Fallback: If it doesn't match either pattern, it returns invalid. This triggers the "Use a valid IPv4 address..." error.
+// This function acts as a translator. It takes messy user input and turns it into a structured object ({ type, value }) that the rest of the app can easily understand.
 function normalizeQuery(rawValue) {
     const value = rawValue.trim();
     if (!value) {
@@ -64,6 +91,7 @@ function getLocationString(location) {
     const parts = [location.city, location.region, location.country].filter(Boolean);
     return parts.length > 0 ? parts.join(", ") : "--";
 }
+// Function to Update UI and Map View
 function updateUI(data) {
     const { ip, location, isp } = data;
     const { lat, lng, timezone } = location;
@@ -91,6 +119,14 @@ async function fetchGeoData(query) {
     }
     return data;
 }
+// This function manages the logic for looking up geographic information based on an IP address or domain name. It handles the process from the moment a user submits a search until the results (or errors) are displayed.
+// Here is the step-by-step breakdown:
+// Validation: It first "normalizes" the input. If the search box is empty or the format is invalid (not a real IP or domain), it shows a specific error message and stops.
+// Preparation: It clears any old errors and triggers a "loading" state and disabling buttons.
+// Data Fetching: It calls fetchGeoData to get the actual location data. If successful, it passes that data to updateUI to refresh the screen.
+// Error Handling: If the network request fails or the address doesn't exist, it displays a "not found" message and logs the technical details to the console.
+// Cleanup: Regardless of whether it succeeded or failed, it turns off the loading state and tells the map component to resize itself (map.invalidateSize) to ensure it renders correctly.
+
 async function handleLookup(rawValue = "") {
     const query = normalizeQuery(rawValue);
     if (query.type === "empty") {
@@ -124,7 +160,7 @@ window.addEventListener("resize", () => map.invalidateSize());
 void fetchGeoData()
     .then((data) => updateUI(data))
     .catch((error) => {
-    console.error("Initial lookup failed:", error);
-    setError("Could not load your current IP information.");
-});
+        console.error("Initial lookup failed:", error);
+        setError("Could not load your current IP information.");
+    });
 //# sourceMappingURL=app.js.map
