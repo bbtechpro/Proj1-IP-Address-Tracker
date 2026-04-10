@@ -2,8 +2,11 @@
   "name": "proj1_ip_address_tracker",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev:watch": "tsc -w -p tsconfig.json",
+    "dev": "npm run build && serve .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -13,13 +16,15 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/bbtechpro/Proj1-IP-Address-Tracker/issues"
   },
   "homepage": "https://github.com/bbtechpro/Proj1-IP-Address-Tracker#readme",
   "devDependencies": {
+    "@types/leaflet": "^1.9.21",
     "@types/node": "^25.5.2",
+    "serve": "^14.2.5",
     "typescript": "^6.0.2"
   }
 }
