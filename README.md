@@ -94,7 +94,7 @@ let marker;
 ### Built with
 
 - Semantic HTML5 markup: 
-  Created a section for the info-cards for ip-display, location-display, timexone-display, and isp-display.
+  Created a section for the info-cards for ip-display, location-display, timezone-display, and isp-display.
 - CSS custom properties
   Flexbox and Grid for alignment of elements
 - Typescript (Compilrd to Javascript)
