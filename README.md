@@ -1,122 +1,133 @@
-# Frontend Mentor - IP address tracker
+# Frontend Mentor - IP address tracker solution
 
-![Design preview for the IP address tracker coding challenge](preview.jpg)
+This is a solution to the [IP address tracker challenge on Frontend Mentor](https://www.frontendmentor.io/challenges/ip-address-tracker-I8-0yYAH0). Frontend Mentor challenges help you improve your coding skills by building realistic projects. 
 
-## Welcome! 👋
+## Table of contents
 
-Thanks for checking out this front-end coding challenge.
+- [Overview](#overview)
+  - [The challenge](#the-challenge)
+  - [Screenshot](#screenshot)
+  - [Links](#links)
+  - [My process](#my-process)
+  - [Built with](#built-with)
+  - [What I learned](#what-i-learned)
+  - [Continued development](#continued-development)
+  - [Author](#author)
 
-[Frontend Mentor](https://www.frontendmentor.io) challenges help you improve your coding skills by building realistic projects.
+## Overview
+Project Requirements:
+- Responsive Design: Ensure the application is fully responsive across various devices and screen sizes.
+- API Integration: Effectively integrate the specified API to fetch and display data dynamically.
+- Interactivity: Implement interactive elements such as search functionality, form validation, and dynamic content updates.
+- Accessibility: Follow best practices to make the application accessible to all users.
+- Version Control: Use Git for version control, with regular commits and a well-documented GitHub repository.
+- Documentation: Include a comprehensive README.md file detailing the project setup, features, and any additional notes.
 
-**To do this challenge, you need a basic understanding of HTML, CSS and JavaScript.**
+### The challenge
 
-## The challenge
-
-Your challenge is to build out this IP Address Tracker app and get it looking as close to the design as possible. To get the IP Address locations, you'll be using the [IP Geolocation API by IPify](https://geo.ipify.org/). To generate the map, we recommend using [LeafletJS](https://leafletjs.com/).
-
-You can use any tools you like to help you complete the challenge. So if you've got something you'd like to practice, feel free to give it a go.
-
-Your users should be able to:
+Users should be able to:
 
 - View the optimal layout for each page depending on their device's screen size
 - See hover states for all interactive elements on the page
 - See their own IP address on the map on the initial page load
 - Search for any IP addresses or domains and see the key information and location
 
----
+### Screenshot
 
-⚠️ **IMPORTANT** ⚠️: To use the IP Geolocation API by IPify, you'll need to sign up for a free account. You won't need to add any cards details to do this and it's a very quick process. This will generate an API Key for you. Usually, you would be able to restrict your API Key to a specific URL (your own domain). This makes sure that other people can't use your API Key on their own websites. IPify doesn't have this feature, but because you aren't adding your card details, this isn't an issue. **So be sure to only sign up for the free account and DO NOT enter any card details**.
+Add a screenshot of your solution.
+![](./images/Barber%20IP%20Address%20Tracker.png)
 
-For the mapping API, we recommend using [LeafletJS](https://leafletjs.com/). It's free to use and doesn't require an API Key. If you decide to use another API, like Google Maps or Mapbox, be sure to secure your API Key. Here are guides for both Google Maps and Mapbox, be sure to read through them thoroughly:
+### Links
 
-- [API Key best practices from Google Developers](https://developers.google.com/maps/api-key-best-practices)
-- [How to use Mapbox securely](https://docs.mapbox.com/help/troubleshooting/how-to-use-mapbox-securely/)
+- Solution URL: [Add solution URL here](https://bbtechpro.github.io/Proj1-IP-Address-Tracker/)
+- Live Site URL: [Add live site URL here](https://bbtechpro.github.io/Proj1-IP-Address-Tracker/)
 
-Exposing your API Key publicly can lead to other people using it to make requests for their own application if the proper precautions aren't in place. Please be sure you read the guides thoroughly and follow their recommendations.
+## My process
 
-**We don't take any responsibility if you expose your API Key while completing the challenge and have not secured it.**
+- I decided to start by coding the logic using Javascript, and then refactoring it with Typescript.
 
----
+- Global Configurations (API Key and Custom Icon)
+const apiKey = "at_BpjP6hDSMim3vUBtr4B6b6X1XgO2y";
 
-### Want some support on the challenge? 
+- Map Initialization
 
-[Join our community](https://www.frontendmentor.io/community) and ask questions in the **#help** channel.
+- This function acts as a safety layer for selecting elements from your web page (the DOM) and defines the rules for valid search inputs.
+- ## 1. The getElementByIdOrThrow function
+- This is a "fail-fast" helper. Instead of just grabbing an element, it verifies that the element actually exists and is a valid HTML element.
+ * Why use it? Normally, document.getElementById returns null if it can't find the ID. If you try to use that null element later, your app crashes with a vague error. This function stops the app immediately with a specific message (Expected HTML element with id...), making debugging much easier.
 
-## Where to find everything
+- ## 2. Element Selectors
+  The code then uses that function to grab all the UI pieces needed for your IP tracker:
+  * Inputs: The form, the text input, and the search button.
+  * Displays: Spots to inject the IP, location, timezone, and ISP data once the search finishes.
+  * Feedback: An error text element to show messages to the user.
 
-Your task is to build out the project to the designs inside the `/design` folder. You will find both a mobile and a desktop version of the design.
+- ## 3. Validation Patterns (Regex)
+  Finally, it defines two Regular Expressions to check if the user's input looks right before sending a request:
+  * ipv4Pattern: Checks for a standard IP address (four sets of numbers 0-255 separated by dots, like 192.168.1.1).
+  * domainPattern: Checks for a valid website address (like google.com or my-site.net). It ensures there are no protocol prefixes (like https://) and that the ending (TLD) is at least two characters long.
 
-The designs are in JPG static format. Using JPGs will mean that you'll need to use your best judgment for styles such as `font-size`, `padding` and `margin`.
+- Marker variable declared globally to allow moving/removing it
+let marker;
 
-If you would like the Figma design file to inspect the design in more detail, you can [subscribe as a PRO member](https://www.frontendmentor.io/pro).
+- Trimming: It removes any accidental spaces at the start or end of the user's input.
+  The "Empty" Check: If there's nothing left after trimming, it tells the main function the input is empty. This triggers the "Enter an IP address..." error.
+  The Regex Tests:
+  It runs .test(trimmed) against the ipv4Pattern. If it matches, it labels the data as ipv4.
+  If not, it checks the domainPattern. If that matches, it labels it as domain.
+  The Fallback: If it doesn't match either pattern, it returns invalid. This triggers the "Use a valid IPv4 address..." error.
+  Normalizing function acts as a translator. It takes messy user input and turns it into a structured object ({ type, value }) that the rest of the app can easily understand.
 
-You will find all the required assets in the `/images` folder. The assets are already optimized.
+- Function to Update UI and Map View
 
-There is also a `style-guide.md` file containing the information you'll need, such as color palette and fonts.
+- Async function to Fetch Data from API (IPify)
+    const response = await fetch(`https://geo.ipify.org/api/v2/country,city?${params.toString()}`);
+  
+- Async function to manage the logic for looking up geographic information based on an IP address or domain name.  It handles the process from the moment a user submits a search until the results (or errors) are displayed.
+  Here is the step-by-step breakdown:
+  - Validation: It first "normalizes" the input. If the search box is empty or the format is invalid (not a real IP or domain), it shows a specific error message and stops.
+  - Preparation: It clears any old errors and triggers a "loading" state and disabling buttons.
+  - Data Fetching: It calls fetchGeoData to get the actual location data. If successful, it passes that data to updateUI to refresh the screen.
+  - Error Handling: If the network request fails or the address doesn't exist, it displays a "not found" message and logs the technical details to the console.
+  -Cleanup: Regardless of whether it succeeded or failed, it turns off the loading state and tells the map component to resize itself to ensure it renders correctly.
+  
+### Built with
 
-## Using AI coding assistants
+- Semantic HTML5 markup: 
+  Created a section for the info-cards for ip-display, location-display, timexone-display, and isp-display.
+- CSS custom properties
+  Flexbox and Grid for alignment of elements
+- Typescript (Compilrd to Javascript)
+- Mobile-first workflow
+- [Styled Components](style-guide.md) - For styles
 
-We've included two files to help you if you're using AI coding assistants (like Claude, GitHub Copilot, Cursor, etc.) while working on this challenge:
 
-- `AGENTS.md` - Contains detailed instructions for AI assistants on how to help you with this challenge. It's tailored to this challenge's difficulty level, so the AI will provide guidance appropriate to your learning stage—offering more support for beginner challenges and encouraging more independence on advanced ones.
-- `CLAUDE.md` - A pointer file that directs Claude-based tools to the AGENTS.md instructions.
+### What I learned
 
-**How to use them:** You don't need to do anything! These files are automatically detected by most AI coding tools. The AI will read them and adjust its behavior to be a better learning partner—guiding you toward solutions rather than just giving you the answers.
+"OpenStreetMap tile request 403r Access Blocked" #40581 error message was appearing after an early attempt at testing. I googled the error and found a solution at https://github.com/dbeaver/dbeaver/issues/40581, where I had to include referer and User-Agent fields in the tile request.
+You must:
 
-**Note:** These files are designed to help you *learn*, not to do the work for you. The AI is instructed to ask questions, give hints, and explain concepts rather than writing complete solutions.
+Use the correct URL: https://tile.openstreetmap.org/{z}/{x}/{y}.png.
+Provide visible licence attribution, following the Attribution Guidelines.
+Send a valid HTTP User-Agent that clearly identifies your application (or a platform X-Requested-With app ID where set automatically).
+From web pages, ensure a valid HTTP Referer header is sent.
+Cache tiles locally according to HTTP caching headers (or at least 7 days if your cache cannot read them).
+Avoid encouraging or enabling copyright infringement.
 
-## Building your project
+Solution retrospective
+What are you most proud of, and what would you do differently next time?
+I'm really happy with how I handled the overlapping layout. Getting that results card to sit perfectly between the blue header and the map. Managing the state of the UI (the "Loading" text, updating the map, and changing the info card) were manageable using Tyescript for a project of this size. 
 
-Feel free to use any workflow that you feel comfortable with. Below is a suggested process, but do not feel like you need to follow these steps:
+What challenges did you encounter, and how did you overcome them?
+I’d say the biggest challenge was the layout positioning of the results card. Another tricky part was the map integration. It was my first time using LeafletJS, and I realized pretty quickly that the map wouldn't show up if the container didn't have a fixed height in CSS. I fixed that by using a mix of Flexbox and a min-height on the map div. Lastly, handling asynchronous data was a learning curve. I had to make sure the map only tried to move once the API actually returned the coordinates, otherwise the app would throw an error. Using async/await and adding a simple "Loading" state for the text fields helped keep everything synced up and smooth for the user.
 
-1. Initialize your project as a public repository on [GitHub](https://github.com/). Creating a repo will make it easier to share your code with the community if you need help. If you're not sure how to do this, [have a read-through of this Try Git resource](https://try.github.io/).
-2. Configure your repository to publish your code to a web address. This will also be useful if you need some help during a challenge as you can share the URL for your project with your repo URL. There are a number of ways to do this, and we provide some recommendations below.
-3. Look through the designs to start planning out how you'll tackle the project. This step is crucial to help you think ahead for CSS classes to create reusable styles.
-4. Before adding any styles, structure your content with HTML. Writing your HTML first can help focus your attention on creating well-structured content.
-5. Write out the base styles for your project, including general content styles, such as `font-family` and `font-size`.
-6. Start adding styles to the top of the page and work down. Only move on to the next section once you're happy you've completed the area you're working on.
+### Continued development
 
-## Deploying your project
+I would look into "API Key masking" or using a proxy server, because right now the API key is visible in the frontend, which isn't ideal for real-world production apps.
 
-As mentioned above, there are many ways to host your project for free. Our recommended hosts are:
+## Author
 
-- [GitHub Pages](https://pages.github.com/)
-- [Vercel](https://vercel.com/)
-- [Netlify](https://www.netlify.com/)
+- William Barber
 
-You can host your site using one of these solutions or any of our other trusted providers. [Read more about our recommended and trusted hosts](https://www.frontendmentor.io/guides/hosting-your-solution).
 
-## Create a custom `README.md`
 
-We strongly recommend overwriting this `README.md` with a custom one. We've provided a template inside the [`README-template.md`](./README-template.md) file in this starter code.
-
-The template provides a guide for what to add. A custom `README` will help you explain your project and reflect on your learnings. Please feel free to edit our template as much as you like.
-
-Once you've added your information to the template, delete this file and rename the `README-template.md` file to `README.md`. That will make it show up as your repository's README file.
-
-## Submitting your solution
-
-Submit your solution on the platform for the rest of the community to see. Follow our ["Complete guide to submitting solutions"](https://www.frontendmentor.io/guides/how-to-submit-solutions) for tips on how to do this.
-
-Remember, if you're looking for feedback on your solution, be sure to ask questions when submitting it. The more specific and detailed you are with your questions, the higher the chance you'll get valuable feedback from the community.
-
-## Sharing your solution
-
-There are multiple places you can share your solution:
-
-1. Share your solution page in the **#finished-projects** channel of the [community](https://www.frontendmentor.io/community).
-2. Share on [X (formerly Twitter)](https://x.com/frontendmentor) and mention **@frontendmentor**, including the repo and live URLs in your post. We'd love to take a look at what you've built and help share it around.
-3. Share your solution on [LinkedIn](https://www.linkedin.com/company/frontend-mentor/).
-4. Blog about your experience building your project. Writing about your workflow, technical choices, and talking through your code is a brilliant way to reinforce what you've learned. Great platforms to write on are [dev.to](https://dev.to/), [Hashnode](https://hashnode.com/), and [CodeNewbie](https://community.codenewbie.org/).
-
-We provide templates to help you share your solution once you've submitted it on the platform. Please do edit them and include specific questions when you're looking for feedback.
-
-The more specific you are with your questions, the more likely it is that another member of the community will give you feedback.
-
-## Got feedback for us?
-
-We love receiving feedback! We're always looking to improve our challenges and our platform. So if you have anything you'd like to mention, please email hi[at]frontendmentor[dot]io.
-
-This challenge is completely free. Please share it with anyone who will find it useful for practice.
-
-**Have fun building!** 🚀
